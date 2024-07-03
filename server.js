@@ -15,6 +15,23 @@ process.on("uncaughtException", (err) => {
 //Config
 dotenv.config({ path: "./config/config.env" });
 
+const agenda = require("./config/agendaConfig");
+
+// Start Agenda
+async function startAgenda() {
+  await agenda.start();
+  console.log("Agenda has been started!");
+}
+
+process.on("SIGTERM", async () => {
+  console.log("Stopping Agenda...");
+  await agenda.stop();
+  process.exit(0);
+});
+
+// Start Agenda
+startAgenda();
+
 //Connect Database
 connectDatabase();
 
