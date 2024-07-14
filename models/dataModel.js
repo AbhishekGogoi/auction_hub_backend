@@ -45,7 +45,7 @@ const dataSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
-  northEastCitiesList: {
+  northEastAreasList: {
     type: Array,
     default: [],
   },
