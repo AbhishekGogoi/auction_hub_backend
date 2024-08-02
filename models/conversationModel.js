@@ -8,6 +8,12 @@ const ConversationSchema = new mongoose.Schema(
     lastMessage: {
       type: String,
     },
+    lastMessageTime: {
+      type: Date,
+    },
+    lastMessageSender: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

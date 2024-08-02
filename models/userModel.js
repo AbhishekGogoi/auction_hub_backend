@@ -22,10 +22,6 @@ const userSchema = new mongoose.Schema(
       unique: [true, "Email is already registered"],
       validate: [validator.isEmail, "Please Enter a valid Email"],
     },
-    emailVerified: {
-      type: Boolean,
-      default: false,
-    },
     password: {
       type: String,
       required: [true, "Please Enter Your Password"],
@@ -73,25 +69,16 @@ const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
-
-    otp: String,
-    otpExpiresIn: Date,
+    lastActive: {
+      type: Date,
+      default: Date.now,
+    },
 
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },
   { timestamps: true }
 );
-
-// Create OTP
-userSchema.methods.createOTP = function () {
-  const otp = Math.floor(100000 + Math.random() * 900000);
-
-  this.otp = otp;
-  this.otpExpiresIn = Date.now() + 15 * 60 * 1000;
-
-  return otp;
-};
 
 // Hashing the Password
 userSchema.pre("save", async function (next) {
@@ -116,8 +103,10 @@ userSchema.methods.comparePassword = async function (password) {
 
 // Generating Password Reset Token
 userSchema.methods.getResetPasswordToken = function () {
+  //plaintext token which will be usually sent to the user via email
   const resetToken = crypto.randomBytes(20).toString("hex");
 
+  //hashing resetToken to create resetPasswordToken
   //Hashing and adding reset Password token to userSchema
   this.resetPasswordToken = crypto
     .createHash("sha256")

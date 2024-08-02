@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// In Mongoose (and in general in programming), the enum property is used to define a set of predefined values that a particular field can take. This helps in constraining the values of the field to a specific set and ensures data integrity by enforcing these constraints.
 const productSchema = new mongoose.Schema({
   tag: {
     type: String,
@@ -168,10 +169,18 @@ const productSchema = new mongoose.Schema({
 });
 
 //Calculating End Date
+// The pre("save") middleware function in Mongoose is used to perform operations before a document is saved to the database. In your productSchema, this middleware is specifically designed to calculate and set the endDate for the product based on the bidTime field.
+// Pre-save middleware to calculate and set the `endDate` field for the product
 productSchema.pre("save", async function (next) {
+  // Check if the `bidTime` field has been modified
   if (!this.isModified("bidTime")) {
+    // If `bidTime` is not modified, skip the calculation and proceed with saving the document
     next();
   }
+
+  // Calculate `endDate` based on the current date and the value of `bidTime`
+  // `bidTime` is assumed to be in days
+  // Proceed with the save operation after setting `endDate`
   this.endDate = new Date(
     new Date().getTime() + Number(this.bidTime) * 24 * 60 * 60 * 1000
   );
